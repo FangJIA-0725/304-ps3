@@ -1,4 +1,17 @@
-lines(1)
+dictionary using Y {
+*****************************************************************
+*  Replace 'Y' with the name of the data file.
+*  The default suffix is '.raw'.
+*
+*  Put this dictionary into a separate file (with the suffix .dct).
+*  (The first line of the dictionary file must contain the
+*  'dictionary' command.)
+*
+*  Then edit the name of that dictionary file into the 'do-file'
+*  portion of the STATA definitions.
+*******************************************************************
+*  Records per case:
+_lines(1)
 
 _line(1)
 
