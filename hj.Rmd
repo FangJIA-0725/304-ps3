@@ -1,38 +1,50 @@
 ---
-title: "A Binary Logistic Regression Model To Identify The Key Factors Of Smoking Using 2016 GSS Data"
-author: "AnanJiAng, Fang Jia"
+title: ' A Binary Logistic Regression Model To Identify The Key Factors Of Smoking
+  Using 2016 GSS Data'
+author: "AnanJiång, Fang Jia"
 date: "10/18/2020"
-output: html_document
-Code and data supporting this analysis is available at: ""
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    latex_engine: xelatex
 ---
-##Abstract
 
-Smoking is a major health problem worldwide; it will increase the risk of having the disease. We used the 2016 General social survey on Canadians at Work and Home data to build a logistic regression model to predict whether an individual will smoke or not given age groups, gender, education level, stress levels, and a number of children in one household. This model might help in developing successful prevention programs for smokers.
+## Abstract
 
-##Introduction
+Smoking is a significant health problem worldwide; it will increase the risk of having the disease. We used the 2016 General social survey on Canadians at Work and Home data to build a logistic regression model to predict whether an individual will smoke or not given age groups, gender, education level, stress levels, and a number of children in one household. This model might help in developing successful prevention programs for smokers.
 
-We obtained the 2016 GSS data from 19609 respondents, along with five features and one response variable. We divided 19609 respondents into ten provinces within Canada and built a logistic regression model to predict whether individuals will smoke or not. By investigating the logistic regression model, we could tell which features impact an individual will smoke or not. In the following aspects, we will explain how we process the 2016 GSS data and how we interpret the result from the logistic regression model.o 1557.79. It already has increasing trend of stock price. 
+## Introduction
 
-##Data
+We obtained the 2016 GSS data from 19609 respondents, along with five features and one response variable. We divided 19609 respondents into ten provinces within Canada. In the following steps, we firstly explained about the data and methodology used in GSS. Secondly, we built the logistic regression model to predict whether individuals will smoke or not base on five predictor variables. Thirdly, we checked if our model fitted by plotting the ROC curve and calculate the AUC value. In the model part, we explained the ROC curve, AUC value, and how they could interpret the model's fitness. We also plotted histograms to observe the proportion of smoking and non-smoking of each X variable. By combining the logistic regression model and histograms, we concluded that some X variables are significant for predicting smoking or non-smoking.  After that, we discussed in detail how the logistic regression model benefits our life. However, we found some data limitations and weaknesses when we were building the logistic regression model. Base on this weakness, we discussed future work that might improve the precision of the model.
 
-The dataset we obtained is the 2016 General Social Survey(GSS). The target population is Canadians who have over 15 years of age at work and home but excluding residents of Yukon, Northwest Territories, and Nunavut as well as full-time residents of institutions. The total number of variables in the dataset is 2194. There are 19609 Canadians took this survey and recorded in the 2016 GSS dataset.We created a data frame by selecting six variables from the GSS dataset. The data frame contained five predictor variables (age group, gender, education level, stress levels, and a number of children in one household) and one responsible variable (people smoke or not).
+
+
+## Data
+
+The dataset we obtained is the 2016 General Social Survey(GSS). The target population is Canadians who have over 15 years of age at work and home but excluding residents of Yukon, Northwest Territories, and Nunavut and full-time residents of institutions. The total number of variables in the dataset is 2194. There are 19609 Canadians who took this survey and were recorded in the 2016 GSS dataset. We created a data frame by selecting six variables from the GSS dataset. The data frame contained five predictor variables (age group, gender, education level, stress levels, and a number of children in one household) and one responsible variable (people smoke or not).
 
 The GSS program used two approaches to collect 2016 data, which were electronic questionnaire(EQ) and via computer-assisted telephone interviews(CATI). To reach desired respondents, paper introductory letters with a secure access code were sent to households. Once a household member confirmed his or her age was 15 years or over and provided the primary phone number belonged to the household, he or she would list the names, sex, and ages of all people in one household. (If the phone number did not belong to him or her, the case would be transferred to CATI.) Then someone from the particular household would be randomly selected as a respondent and kept on the survey. A respondent who is not on a roster will leave an email address or phone number to continue doing the survey. 
 
-The overall response rate for 2016 GSS was 50.8%. This reflected that almost half of the respondents didn't provide desired responses. To increase the response rate, the GSS program decided to adjust non-response. Three types grouped Non-respondents' phone numbers:
+The overall response rate for 2016 GSS was 50.8%. This reflected that almost half of the respondents didn't provide desired responses. The GSS program adjusts to the non-response telephone number.  Three types grouped Non-respondents' phone numbers:
 Type 1: Non-respondents with some auxiliary information. (i.e., complete information of household member)
-Type 2: Non-respondents with auxiliary information from various sources available to Statistics Canada.
+Type 2: Non-respondents with additional information from various sources available to Statistics Canada.
 Type 3: Non-respondents with no auxiliary information.
 The adjustment was divided into three stages. The first stage focuses on non-respondents in type 3 within each stratum independently. The second stage mainly focuses on non-respondents in type 2. They had auxiliary information which was used to a model propensity to respond. The third stage adjusted non-respondents in type 1. After adjusting non-response, the non-response phone numbers were finally dropped.
 
-The survey used stratified sampling method to stratify data into 10 provinces in Canada. Stratified sampling method divides total population into smaller groups or strata to complete the sampling process. The strata is formed based on some common characteristics in the population data. After dividing the population into strata, we can randomly select the sample proportionally. Usually, simple random sampling method is a good choice because it provides equal chance for respondents to take survey. However, let's consider if one province has only 300 residents while the other province has 2000 residents. We would like to use 2000 as sample size to make statistical prediction. There will occur under sample error in the province with 300 residents because we use 300 respondents do predict a 2000 sample. The outcome of analysis must be incorrect. Same as over sample error. Therefore, GSS data chose stratified sampling method was a better decision. Sample would be stratified by different groups so each group would have a corresponding sample size. This method is good for reducing over-sample or under-sample error. 19609 Canadians took this survey. In general, the dataset is useful to predict if Canadians will smoke or not but due to the restriction of only Canada data, we can't tell the whole world if the one will smoke or not who lived outside Canada. The dataset was also too old which was recorded on August 2 to December 23, 2016. If we can have some recent and future data to analysis and compare, we can predict a more precise outcome.
+The survey used a stratified sampling method to stratify data into ten provinces in Canada. The stratified sampling method divides the total population into smaller groups or strata to complete the sampling process. The strata are formed based on some common characteristics in the population data. After dividing the population into strata, we can randomly select the sample proportionally. Usually, a simple random sampling method is a good choice because it provides an equal chance for respondents to take the survey. However, let's consider if one province has only 300 residents while the other province has 2000 residents. We would like to use 2000 as a sample size to make statistical predictions. There will occur an under-sample error in the province with 300 residents because we use 300 respondents to predict a 2000 sample. The outcome of the analysis must be incorrect. Same as over sample error. Therefore, GSS data chose a stratified sampling method was a better decision. Different groups would stratify the sample so each group would have a corresponding sample size. This method is good for reducing over-sample or under-sample error. 19609 Canadians took this survey. In general, the dataset is useful to predict if Canadians will smoke or not, but due to the restriction of only Canada data, we can't tell the whole world if the one will smoke or not who lived outside Canada. The dataset was also too old, which was recorded from August 2 to December 23, 2016. If we can have some recent and future data to analyze and compare, we can predict a more precise outcome.
 
-##Model
+## Model
 
-```{r setup, include=FALSE}
+```{r,echo=FALSE,include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
 library(tidyverse)
 library(survey)
+
+gss <- read.csv("/Users/macbookpro/Desktop/gss.csv")
+
+library(ggplot2)
 # considered smoking occasionally and daily as YES, count not at all smoking as NO, count don't know, refusal and not stated as NA
 data<-gss
 str(data)
@@ -55,6 +67,11 @@ ss2$smoking.type<-as.factor(ifelse(ss2$smoking_or_not=="YES","1","0"))
 # from the guidebook of dataset in the website, put each province's population into survey design. 
 ss2$fpc<-ifelse(ss2$province=="Alberta",1737,ifelse(ss2$province=="Ontario",5069,
                                               ifelse(ss2$province=="Newfoundland and Labroador",1295,ifelse(ss2$province=="Prince Edward Island",630,ifelse(ss2$province=="Nova Scotia",1264,ifelse(ss2$province=="New Brunswick",1287,ifelse(ss2$province=="Quebec",3132,ifelse(ss2$province=="Manitoba",1274,ifelse(ss2$province=="Saskatchewan",1374,ifelse(ss2$province=="British Columbia",2547,0))))))))))
+library("plotROC")
+
+```
+
+```{r,echo=FALSE}
 example.design.strs<-svydesign(id=~1,strata=~province, data=ss2, fpc=~fpc)
 # Use above survey design to make a svyglm, with y is smoking and non-smoking, x is five variables.
 svyglm.strs.logit <- svyglm(smoking.type ~ sex+number_of_children+level_of_stress+education_level+agegroup, example.design.strs, family="binomial")
@@ -62,7 +79,7 @@ summary(svyglm.strs.logit)
 # All the coefficients of each x 
 svyglm.strs.logit$coefficients
 ```
-##Model
+
 
 We built a logistic regression model to predict if people would smoke or not. A logistic regression model is a statistical model that, in its basic form, uses a logistic function to model a binary response variable. Four assumptions are using the logistic regression model. Firstly, the respondent variable must be binary. In this model, our binary response variable is people smoke or not smoke. Secondly, the observations of logistic regression must be independent. Each observation represents a person in one household. Thirdly, the independent variables must not be highly correlated with each other. We choose five independent variables, which are sex, number of children, stress levels, education levels, and age groups. These variables have no direct relationship with each other. Thirdly, there is a linearly related relationship between independent variables and the log odds. The logistic regression model is log(p/1-p) = β0+ β1(sexMale) + β2(number_of_childrenNone) + ... + β6(number_of_childrenTwo) + β7(level_of_stress don't know) + ... + β13(level_of_stressRefusal) + β14(education_levelNot stated) + ... + β18(education_levelValid skip) + β19(agegroup25 to 34 years) + ...+ β23(agegroup75 years and over). It shows there is a linear relationship between x and log odds.
 
@@ -90,103 +107,158 @@ Then we use logistic regression function:
 log(p/1-p) = -3.3883 + (sexMale=1)*0.2475 + (level_of_stressNot at all = 1)* 0.0949  + (education_levelUniversity=1)*0.5250 = -2.5209
 In conclusion, the log odds of "if Mike smoke" = -2.5209. We can transfer it into probability = exp(-2.5209)=8.04%
 So we can also conclude that Mike has a probability of 8.04% to smoke.
-##Results
-```{r,include=FALSE,echo=TRUE}
+
+## Model Check
+```{r,echo=FALSE}
+# Create a ROC curve and AUC based on the logistic regression model
+library(pROC)
+test_prob = predict(svyglm.strs.logit,newdata = ss2,type = "response")
+test_roc = roc(ss2$smoking_or_not ~ test_prob, print.auc = TRUE)
+plot(test_roc, main= "Figure 1:How well the model distinguish binary classifier")
+```
+
+
+ROC(Receiver Operator Characteristic) curve is used to show binary classifiers' diagnostic ability by plotting. It is made by plotting the true positive rate(TPR) vs. the false positive rate(FPR). TPR is the proportion of predictor variables that are correctly predicted to be positive out of all positive predictor variables. TPR in our graph y-axis can also be called sensitivity. The function of this proportion is (TP/(TP+FN)). Similarly, FPR is the proportion of predictors that are incorrectly predicted to be positive out of all negative predictor variables. FPR in the below graph x_axis is equal to 1-specificity. The function of FPR is (FP/(TN+FP)). For example, when we test our model, TPR is the rate at which people are correctly predicted to smoke. In our graph of ROC-AUC, TPR = sensitivity, FPR=1-specificity. 
+
+Our model's ROC curve shows a relationship between the true positive rate of smoking and a false positive smoking rate. TPR of smoking means the percentage of people who are predicted to smoke, and they smoke. FPR of smoking represents the rate of people who are predicted to smoke, but they do not smoke indeed. Each dot on the curve reflects a cut-off. From the cut-off point, you can see a particular TPR value and FPR value.
+
+AUC is the area under the ROC curve. We use AUC to test predictive accuracy. In other words, we can check if a model is fit to predict. Since the area will not be bigger than one and ROC is always above the line y = x, the area range is between 0.5 and 1. Area = 1 will be a perfect test of the model. When AUC is closer to 1, the model will get higher accuracy in predicting. When AUC is closer to 0.5, the model will be less accurate for predicting. You can see a rough guide about classifying a diagnostic test's accuracy from the link: http://gim.unmc.edu/dxtests/roc3.htm. It says:
+.90-1 = excellent (A)
+.80-.90 = good (B)
+.70-.80 = fair (C)
+.60-.70 = poor (D)
+.50-.60 = fail (F)
+Our AUC = 0.628 suggests a 62.8% chance that people will be correctly predicted to smoke. Although AUC is not as high as 1.0 sensitivity, it still shows that our model is acceptable and has the diagnostic ability to make predictions. We think our next step is to improve the AUC value; we will find a new model to test, such as the Bayesian model, which may fit better than the logistic regression model.
+
+## Results
+```{r,echo=FALSE}
 # create a bar plot with sex and (smoking, non-smoking)
 ggplot(ss2, aes(x = sex, fill = smoking_or_not)) +
     geom_bar(position = "fill") +
     theme_classic() + 
   labs(x="gender",
-       title= "Figure 1: The distribution of individuals smoking given female and male  ",
+       title= "Figure 2: The distribution of individuals smoking given female and male  ",
        subtitle = "Changes in individuals smoking given different gender ",
        cex.names = 0.9)+
   theme_bw()+theme(axis.text.x = element_text(angle = 30, hjust = 1, size=10,color="darkred"))
 ```
 
-By analyzing figure 1, the number of males who choose to smoke more than the number of females chooses to smoke. In the model result, the sex of female counts as a baseline. The coefficient of the male in the logistic regression model is positive(0.247). When an individual's gender is male, and other variables remain the same, the odds of individual smoke is increased by 0.247. 
+By analyzing figure 2, the number of males who choose to smoke more than the number of females decides to smoke. In the model result, the sex of female counts as a baseline. The coefficient of the male in the logistic regression model is positive(0.247). When an individual's gender is male, and other variables remain the same, the odds of individual smoke is increased by 0.247. 
 
-```{r,include=FALSE,echo=TRUE}
+```{r,echo=FALSE}
 # create a bar plot with different level of stress and (smoking, non-smoking)
 ggplot(ss2, aes(x = level_of_stress, fill = smoking_or_not)) +
     geom_bar(position = "fill") +
     theme_classic() + 
   labs(x="stress level",
-       title= "Figure 2: The distribution of individuals smoking given eight stress levels  ",
+       title= "Figure 3: The distribution of individuals smoking given eight stress levels  ",
        subtitle = "Changes in individuals smoking given different stress levels ",
        cex.names = 0.9)+
   theme_bw()+theme(axis.text.x = element_text(angle = 30, hjust = 1, size=10,color="darkred"))
 ```
 
-From figure 2, the number of extreme stress people who smoke is the most among all eight stress levels.
+Figure 3 shows the number of extreme stress people who smoke is the most among all eight stress levels.
 The baseline for stress levels is a bit stressful. Don't know in stress level is not significant in evaluating people will smoke because the p-value is 0,97, which is larger than 0.05. We will not consider the don't know stress level when building the logistic regression model. The coefficient of not very stressful and refusal is negative(-0.1367 and -10.7448). When an individual is above two stress levels, the odds of people smoke will decrease. The rest of the five stress levels have a positive coefficient; it represents an increase in people's odds of smoking. 
 
-```{r,include=FALSE,echo=TRUE}
+```{r,echo=FALSE}
 # create a bar plot with different age groups and (smoking, non-smoking)
 ggplot(ss2, aes(x = agegroup, fill = smoking_or_not)) +
     geom_bar(position = "fill") +
     theme_classic() + 
   labs(x="stress level",
-       title= "Figure 3: The distribution of individuals smoking given seven agegroups",
+       title= "Figure 4: The distribution of individuals smoking given seven agegroups",
        subtitle = "Changes in individuals smoking given different age range ",
        cex.names = 0.9)+
   theme_bw()+theme(axis.text.x = element_text(angle = 30, hjust = 1, size=10,color="darkred"))
 ```
 
-From figure 3, the number of people in 25-34 years old and 45-64 years old choose to smoke approximately are the most among all seven age groups. The baseline for age groups is 15-24. However, the 45-54 age group is not significant to predict people will smoke because the p-value, which is 0.845, is larger than 0.05. The rest of the five significant age groups are 25-34, 35-45, 55-64,65-74, 75, and over. There are three age groups(55-64, 65-74,75, and over) that have negative coefficients, which are -0.1671,-0.5929, and -1.4789, respectively. There are two age groups, 25-34 and 35-45, with a positive coefficient(0.056498 and 0.032735). When people are in above two age groups, people's odds will increase by 0.056498 and 0.032735, respectively.
+From figure 4, the number of people in 25-34 years old and 45-64 years old choose to smoke approximately are the most among all seven age groups. The baseline for age groups is 15-24. However, the 45-54 age group is not significant to predict people will smoke because the p-value, which is 0.845, is larger than 0.05. The rest of the five significant age groups are 25-34, 35-45, 55-64,65-74, 75, and over. There are three age groups(55-64, 65-74,75, and over) with negative coefficients, which are -0.1671,-0.5929, and -1.4789, respectively. There are two age groups, 25-34 and 35-45, with a positive coefficient(0.056498 and 0.032735). When people are in above two age groups, the odds of people smoking will increase by 0.056498 and 0.032735, respectively.
 
-```{r,include=FALSE,echo=TRUE}
+```{r,echo=FALSE}
 # create a bar plot with different education levels and (smoking, non-smoking)
 ggplot(ss2, aes(x = education_level, fill = smoking_or_not)) +
     geom_bar(position = "fill") +
     theme_classic() + 
   labs(x="education level",
-       title= "Figure 4: The distribution of individuals smoking given six education levels  ",
+       title= "Figure 5: The distribution of individuals smoking given six education levels  ",
        subtitle = "Changes in individuals smoking given different education levels ",
        cex.names = 0.9)+
   theme_bw()+theme(axis.text.x = element_text(angle = 20, hjust = 1, size=10,color="darkred"))
 ```
+Figure 5 shows that the number of people in education levels such as not stated, valid skip and trade school, college choose to smoke is approximately the most among all six education levels. The baseline for education levels is high school. However, when an individual is a refusal to answer the education level, the odds of smoking will decrease by -9.4556. 
 
-Figure 4 shows that the number of people in education levels such as not stated, valid skip and trade school, college choose to smoke is approximately the same, and most among all six education levels. The baseline for education levels is high school. However, when an individual is a refusal to answer the education level, the odds of people will decrease by -9.4556. 
-
-```{r,include=FALSE,echo=TRUE}
+```{r,echo=FALSE}
 # create a bar plot with number of children in one household and (smoking, non-smoking)
 ggplot(ss2, aes(x = number_of_children, fill = smoking_or_not)) +
     geom_bar(position = "fill") +
     theme_classic() + 
   labs(x="number of children in one household ",
-       title= "Figure 5: The distribution of individuals smoking given number of children",
+       title= "Figure 6: The distribution of individuals smoking given number of children",
        subtitle = "Changes in individuals smoking given different numbers of children ",
        cex.names = 0.9)+
   theme_bw()+theme(axis.text.x = element_text(angle = 30, hjust = 1, size=10,color="darkred"))
+
 ```
+Figure 6 shows that people who have 0,1,2,4 and more kids choose to smoke have approximately the same percentage. Those people who have three kids decide to smoke has a smaller portion. The baseline of the number of children in the predictor variable is four or more children. In the logistic regression model result, when a person has three kids, the odds of smoking are decreased by -0.153934.   
 
-Figure 5 shows that a number of households with 0,1,2,4 and more kids choose to smoke have approximately the same number of households with three kids choosing to smoke has a smaller percentage. The baseline for the number of children is four or more children. In the logistic regression model result, when one household has three kids, the odds of smoking are decreased by -0.153934.   
+Overall, the male is more likely to smoke, people who have (0-2) children or (four and more) children are more likely to smoke. People who are extremely stressed, not stressed, not stated, quite a bit of stressful, or a bit stressed are more likely to smoke. People whose education_level is a trade school,
+college, university, or valid skip are more likely to smoke. Furthermore, people who are between 
+15 and 45 years old are more likely to smoke.
 
-Overall, people who have 0-2 children or four and more children are more likely to smoke. People who are extremely stressed, not at all stressful, not stated, quite a bit of stressful or a bit stressful are more likely to smoke. People whose education_level is a trade school, college, university, or valid skip are more likely to smoke. Furthermore, people who have 15-45 years of age are more likely to smoke. 
 
-
-##Discussion
+## Discussion
 
 From the logistic regression model result, we could tell that young people and students are more likely to smoke. They have different stress levels. Students are stressed by a huge amount of homework, scores, and their parents. Then they are easy to smoke for relaxation. Young adults who have massive works to do or stress raising their children are also more likely to smoke. 
 
-Our model can be used to provide information on the smoking prevention program. If we know the necessary information of a person, then we can use the logistic regression model to predict the odds of individuals who smoke. When an individual has more odds of smoking, the smoking prevention program can send an email that includes information about stopping smoking to these people. People are less likely to control themselves from smoking. If we can stay away from smoking initially, we will have less risk of having the disease. 
+Our model can be used to provide information on the smoking prevention program. If we know the necessary information of a person, then we can use the logistic regression model to predict the odds of individuals who smoke. When an individual has more odds of smoking, the smoking prevention program can send an email that includes information about stopping smoking to these people. If we can stay away from smoking initially, we will have less risk of having the disease. 
 
-As we mentioned before, the dataset is from the 2016 GSS. Therefore, we can not guarantee a precise prediction according to the past data. We will collect some more recent data and future data to do a new logistic regression model in future work, we can predict with a more precise model result. Ten provinces within Canada stratify the data. There are limitations to geographic focus. We can only predict Canadians smoke or not using the 2016 GSS data. However, we would like to let people focus on the health problem should not only in Canada but also worldwide. As a result, we will also collect more detailed survey data from worldwide to predict people will smoke or not in different countries.
-Furthermore, we would like to select more predictor variables. For example, we may choose more predictor variables such as income, occupation, and parents in the household. The more predictor variables we use in the logistic regression model, the more precise prediction we will get. 
-
-
+As we mentioned before, the dataset is from the 2016 GSS. Therefore, we can not guarantee a precise prediction according to the past data. We will collect some more recent data and future data to do a new logistic regression model in future work, we can predict with a more precise model result. Ten provinces within Canada stratify the data. There are limitations to geographic focus. We can only predict Canadians smoke or not using the 2016 GSS data. However, we would like to let people focus on the health problem, which is not only in Canada but also worldwide. As a result, we will also collect more detailed survey data from worldwide to predict people will smoke or not in different countries.
+Furthermore, we would like to select more predictor variables. For example, we may choose more predictor variables such as income, occupation, and a number of parents in the household. The more predictor variables we use in the logistic regression model, the more precise prediction we will get. 
 
 
 
+## Repo 
+
+Code and data supporting this analysis is available at: "https://github.com/FangJIA-0725/304-ps3"
+
+## Reference
+
+- General social survey (GSS), 2016: Cycle 30, Canadians at Work and Home.[Public Use Microdata File Documentation and User’s Guide] Ottawa, ON: Statistics Canada. Retrieved from http://www.chass.utoronto.ca/
+
+- H.Wickham (2016) ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York.
+
+- R Core Team (2013). R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria.
+URL http://www.R-project.org/.
+
+- Sing T, Sander O, Beerenwinkel N, Lengauer T (2005). “ROCR: visualizing classifier performance in R.” Bioinformatics, 21(20), 7881.
+
+-T.Lumley (2020) "survey: analysis of complex survey samples". R package version 4.0.
+
+ T.Lumley (2004) Analysis of complex survey samples. Journal of Statistical Software 9(1): 1-19
+
+ T.Lumley (2010) Complex Surveys: A Guide to Analysis Using R. John Wiley and Sons.
+
+- Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686,
+https://doi.org/10.21105/joss.01686
+
+ - Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti, Frédérique Lisacek, Jean-Charles
+Sanchez and Markus Müller (2011). pROC: an open-source package for R and S+ to analyze and compare
+ROC curves. BMC Bioinformatics, 12, p. 77.  DOI: 10.1186/1471-2105-12-77
+<http://www.biomedcentral.com/1471-2105/12/77/>
+ 
+-Yihui Xie (2020). knitr: A General-Purpose Package for Dynamic Report Generation in R. R package
+version 1.27.
+
+ Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and Hall/CRC. ISBN
+978-1498716963
+
+ Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden,
+Friedrich Leisch and Roger D. Peng, editors, Implementing Reproducible Computational Research.
+Chapman and Hall/CRC. ISBN 978-1466561595
 
 
 
-##Reference
--GSS 2016 Dataset: https://sda-artsci-utoronto-ca.myaccess.library.utoronto.ca/cgi-bin/sda/hsda2?setupfile=harcsda4&datasetname=gss30&ui=2&action=subset
--H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
--R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL
-  https://www.R-project.org/.
--Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
--T. Lumley (2020) "survey: analysis of complex survey samples". R package version 4.0.
--T. Lumley (2004) Analysis of complex survey samples. Journal of Statistical Software 9(1): 1-19
--T. Lumley (2010) Complex Surveys: A Guide to Analysis Using R. John Wiley and Sons.
+
+
+
